@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENGLISH PRONUNCIATION BATTLE | Listen – Choose – Blend – Read!</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.4);
+      --mum-color: #ec4899;
+      --mum-bg: rgba(236, 72, 153, 0.15);
+      --daughter-color: #06b6d4;
+      --daughter-bg: rgba(6, 182, 212, 0.15);
+      --gold: #f59e0b;
+      --success: #10b981;
+      --warning: #f97316;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* TOP BAR & SCOREBOARD HEADER */
+    header {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-icon {
+      font-size: 2rem;
+    }
+
+    .brand-title h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #60a5fa, #f472b6, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .players-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .player-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 2px solid transparent;
+      background: var(--bg-card);
+      transition: all 0.3s ease;
+    }
+
+    .player-badge.mum {
+      border-color: rgba(236, 72, 153, 0.4);
+    }
+
+    .player-badge.daughter {
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+
+    .player-badge.active.mum {
+      background: var(--mum-bg);
+      border-color: var(--mum-color);
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+      transform: scale(1.05);
+    }
+
+    .player-badge.active.daughter {
+      background: var(--daughter-bg);
+      border-color: var(--daughter-color);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+      transform: scale(1.05);
+    }
+
+    .player-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .player-score {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .turn-pill {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .mum .turn-pill { background: var(--mum-color); color: white; }
+    .daughter .turn-pill { background: var(--daughter-color); color: #0f172a; }
+
+    /* VOICE STATUS BAR */
+    .voice-status {
+      background: #0b1120;
+      padding: 6px 24px;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+      color: var(--text-muted);
+    }
+
+    .voice-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+    .dot.warn { background: var(--warning); }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      max-width: 1050px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* HOME MENU */
+    .hero {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .hero h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .hero .subtitle {
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .menu-btn {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      color: var(--text-main);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-btn:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      background: var(--bg-card-hover);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .menu-btn.featured {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #1d4ed8 0%, #7e22ce 100%);
+      border: none;
+      text-align: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .menu-btn.featured:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 30px rgba(126, 34, 206, 0.45);
+    }
+
+    .menu-btn .icon {
+      font-size: 2.2rem;
+    }
+
+    .menu-btn h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .menu-btn p {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    /* GAMEPLAY ARENA */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .round-badge {
+      background: var(--primary);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .difficulty-badge {
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .diff-easy { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #34d399; }
+    .diff-medium { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #fbbf24; }
+    .diff-hard { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #f87171; }
+
+    .turn-banner {
+      text-align: center;
+      padding: 12px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .turn-banner.mum {
+      background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.3), transparent);
+      border: 1px solid var(--mum-color);
+      color: #fbcfe8;
+    }
+
+    .turn-banner.daughter {
+      background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+      border: 1px solid var(--daughter-color);
+      color: #cffafe;
+    }
+
+    .question-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+    }
+
+    .instruction-text {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .ipa-display {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 800;
+      color: var(--gold);
+      background: #0f172a;
+      display: inline-block;
+      padding: 12px 36px;
+      border-radius: 16px;
+      border: 2px solid #334155;
+      margin: 10px 0 20px;
+      letter-spacing: 2px;
+    }
+
+    .word-display {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .audio-controls {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 16px 0 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn-audio {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-audio:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .btn-audio.slow {
+      background: #334155;
+      box-shadow: none;
+      font-size: 1rem;
+      padding: 14px 22px;
+    }
+
+    .btn-audio.slow:hover {
+      background: #475569;
+    }
+
+    /* OPTIONS GRID (ROUND 1 & 2) */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 600px) {
+      .options-grid { grid-template-columns: 1fr; }
+    }
+
+    .option-btn {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 16px;
+      padding: 20px;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: #1e293b;
+      transform: translateY(-2px);
+    }
+
+    .option-btn.correct {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: var(--success);
+      color: #6ee7b7;
+    }
+
+    .option-btn.wrong {
+      background: rgba(249, 115, 22, 0.2);
+      border-color: var(--warning);
+      opacity: 0.7;
+    }
+
+    .option-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ROUND 3: SOUND BLENDING */
+    .blend-slots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      min-height: 76px;
+      background: #0f172a;
+      border: 2px dashed #475569;
+      border-radius: 16px;
+      padding: 14px;
+      margin: 16px auto;
+      max-width: 600px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .phoneme-pool {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .phoneme-tile {
+      background: linear-gradient(180deg, #334155, #1e293b);
+      border: 2px solid #64748b;
+      color: var(--gold);
+      font-size: 1.8rem;
+      font-weight: 800;
+      padding: 14px 24px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .phoneme-tile:hover:not(:disabled) {
+      transform: translateY(-3px);
+      border-color: var(--gold);
+    }
+
+    .phoneme-tile.in-slot {
+      background: #1d4ed8;
+      border-color: #60a5fa;
+      color: white;
+    }
+
+    .phoneme-tile:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    /* ROUND 4: TEACHER EVALUATION */
+    .teacher-panel {
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid #475569;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 650px;
+      margin: 20px auto 0;
+    }
+
+    .teacher-panel p {
+      font-size: 1rem;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .teacher-btns {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-eval {
+      padding: 14px 26px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1.15rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn-eval:hover { transform: scale(1.04); }
+    .btn-eval.pass { background: var(--success); color: #064e3b; }
+    .btn-eval.retry { background: var(--gold); color: #451a03; }
+
+    /* FEEDBACK BOX */
+    .feedback-box {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 16px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .feedback-box.show { display: block; }
+    .feedback-box.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid var(--success);
+    }
+    .feedback-box.encourage {
+      background: rgba(245, 158, 11, 0.15);
+      border: 2px solid var(--gold);
+    }
+
+    .feedback-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .illustration-reveal {
+      font-size: 3.5rem;
+      margin: 8px 0;
+    }
+
+    .btn-next {
+      margin-top: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--primary-glow);
+      transition: all 0.2s;
+    }
+
+    .btn-next:hover {
+      transform: scale(1.05);
+      background: #2563eb;
+    }
+
+    /* ROUND SUMMARY & FINAL PODIUM */
+    .summary-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 24px;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .scores-compare {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+
+    .score-box {
+      flex: 1;
+      min-width: 200px;
+      padding: 24px;
+      border-radius: 20px;
+      background: #0f172a;
+      border: 2px solid var(--border);
+    }
+
+    .score-box.leader {
+      border-color: var(--gold);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+      transform: scale(1.05);
+    }
+
+    .score-box h4 { font-size: 1.4rem; margin-bottom: 8px; }
+    .score-box .big-num { font-size: 3rem; font-weight: 900; color: var(--gold); }
+
+    /* SCOREBOARD TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #0f172a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    th { background: #1e293b; color: var(--gold); }
+
+    /* CONTROLS FOOTER */
+    .nav-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #475569;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-ghost:hover {
+      color: white;
+      border-color: white;
+    }
+
+    /* CONFETTI CANVAS */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<header>
+  <div class="brand" onclick="goHome()" title="Back to Home Menu">
+    <span class="brand-icon">🎙️</span>
+    <div class="brand-title">
+      <h1>ENGLISH PRONUNCIATION BATTLE</h1>
+      <p>Listen – Choose – Blend – Read!</p>
+    </div>
+  </div>
+
+  <div class="players-bar">
+    <div id="badge-mum" class="player-badge mum active">
+      <div>
+        <div class="player-name">👩 Mum</div>
+        <span id="turn-mum" class="turn-pill">Your Turn</span>
+      </div>
+      <div id="score-mum" class="player-score">0</div>
+    </div>
+
+    <div id="badge-daughter" class="player-badge daughter">
+      <div>
+        <div class="player-name">👧 Daughter</div>
+        <span id="turn-daughter" class="turn-pill" style="visibility:hidden;">Your Turn</span>
+      </div>
+      <div id="score-daughter" class="player-score">0</div>
+    </div>
+  </div>
+</header>
+
+<div class="voice-status">
+  <div class="voice-indicator">
+    <span id="voice-dot" class="dot"></span>
+    <span id="voice-label">Checking British English (en-GB) voice engine...</span>
+  </div>
+  <div>
+    <button class="btn-ghost" style="padding: 4px 10px; font-size: 0.8rem;" onclick="togglePlayerManually()">🔄 Switch Turn (Đổi lượt)</button>
+  </div>
+</div>
+
+<main>
+  <!-- SCREEN 1: HOME MENU -->
+  <section id="screen-home" class="screen active">
+    <div class="hero">
+      <h2>ENGLISH PRONUNCIATION BATTLE</h2>
+      <div class="subtitle">LISTEN – CHOOSE – BLEND – READ!</div>
+      <p>Interactive Classroom Gameshow for <strong>Mum</strong> vs <strong>Daughter</strong>.<br>
+      Trò chơi luyện phát âm tiếng Anh chuẩn Anh-Anh (IPA) dành cho 2 người chơi.</p>
+    </div>
+
+    <div class="menu-grid">
+      <button class="menu-btn featured" onclick="startMode('full')">
+        <span class="icon">🏆</span>
+        <h3>1. START GAME (Full 4-Round Battle)</h3>
+        <p>Trận đấu đầy đủ 4 vòng (5–10 phút): Guess the Sound → Listen & Choose → Sound Blending → Read It Aloud!</p>
+      </button>
+
+      <button class="menu-btn" onclick="startMode('quick')">
+        <span class="icon">⚡</span>
+        <h3>2. QUICK PRACTICE</h3>
+        <p>Ôn tập nhanh 8 câu hỏi tổng hợp từ tất cả các vòng. Phù hợp khởi động đầu giờ.</p>
+      </button>
+
+      <button class="menu-btn" onclick="startMode('blending')">
+        <span class="icon">🧩</span>
+        <h3>3. SOUND BLENDING</h3>
+        <p>Tập trung ghép các âm vị IPA riêng lẻ thành từ hoàn chỉnh kèm hình minh họa.</p>
+      </button>
+
+      <button class="menu-btn" onclick="startMode('listening')">
+        <span class="icon">🎧</span>
+        <h3>4. LISTENING CHALLENGE</h3>
+        <p>Thử thách phân biệt các cặp từ dễ nhầm lẫn (minimal pairs: ship/sheep, bed/bad...).</p>
+      </button>
+
+      <button class="menu-btn" onclick="showScoreboard()">
+        <span class="icon">📊</span>
+        <h3>5. SCOREBOARD</h3>
+        <p>Xem bảng vàng thành tích và lịch sử các trận đấu giữa Mum và Daughter.</p>
+      </button>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: ACTIVE GAMEPLAY -->
+  <section id="screen-game" class="screen">
+    <div class="game-header">
+      <span id="round-title" class="round-badge">ROUND 1 – GUESS THE SOUND</span>
+      <span id="question-progress" style="font-weight:700; color:#cbd5e1;">Question 1 / 4</span>
+      <span id="diff-badge" class="difficulty-badge diff-easy">Easy (+10 pts)</span>
+    </div>
+
+    <div id="turn-banner" class="turn-banner mum">
+      🎯 TURN: MUM (Lượt của Mẹ)
+    </div>
+
+    <div class="question-card">
+      <p id="q-instruction" class="instruction-text">Listen to the British English word and choose its highlighted IPA sound!</p>
+      
+      <div id="q-visual-area"></div>
+
+      <div class="audio-controls" id="audio-controls-area">
+        <button class="btn-audio" onclick="playCurrentAudio(1.0)">
+          🔊 Listen (Anh-Anh)
+        </button>
+        <button class="btn-audio slow" onclick="playCurrentAudio(0.72)">
+          🐢 Slow (Nghe chậm)
+        </button>
+      </div>
+
+      <div id="interactive-area"></div>
+
+      <div id="feedback-box" class="feedback-box">
+        <div id="feedback-title" class="feedback-title"></div>
+        <div id="feedback-detail" style="font-size:1.1rem; line-height:1.5;"></div>
+        <div id="feedback-visual" class="illustration-reveal"></div>
+        <button id="btn-next" class="btn-next" onclick="nextQuestion()">Next Question ➔</button>
+      </div>
+    </div>
+
+    <div class="nav-footer">
+      <button class="btn-ghost" onclick="goHome()">🏠 Home Menu</button>
+      <button class="btn-ghost" onclick="skipQuestion()">Skip Question ⏭️</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: ROUND INTERMISSION -->
+  <section id="screen-round-summary" class="screen">
+    <div class="summary-card">
+      <span class="round-badge" id="intermission-badge">END OF ROUND 1</span>
+      <h2 style="font-size: 2.2rem; margin: 16px 0 8px;" id="leader-headline">Mum is in the lead!</h2>
+      <p style="color: var(--text-muted);" id="leader-sub">Great teamwork! Get ready for the next challenge.</p>
+
+      <div class="scores-compare">
+        <div id="sum-box-mum" class="score-box">
+          <h4>👩 Mum</h4>
+          <div class="big-num" id="sum-score-mum">0</div>
+          <p>points</p>
+        </div>
+        <div id="sum-box-daughter" class="score-box">
+          <h4>👧 Daughter</h4>
+          <div class="big-num" id="sum-score-daughter">0</div>
+          <p>points</p>
+        </div>
+      </div>
+
+      <button class="btn-next" onclick="continueNextRound()">Continue to Next Round 🚀</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 4: FINAL WINNER PODIUM -->
+  <section id="screen-final" class="screen">
+    <div class="summary-card">
+      <div style="font-size: 4rem; margin-bottom: 10px;">🏆🎉</div>
+      <h2 style="font-size: 2.5rem; color: var(--gold);" id="final-winner-title">CHAMPION: MUM!</h2>
+      <p style="font-size: 1.2rem; color: #cbd5e1; margin-top: 8px;" id="final-encouragement">
+        Fantastic pronunciation battle! Both of you improved your British English skills today!
+      </p>
+
+      <div class="scores-compare">
+        <div id="final-box-mum" class="score-box">
+          <h4>👩 Mum</h4>
+          <div class="big-num" id="final-score-mum">0</div>
+          <p>Total Score</p>
+        </div>
+        <div id="final-box-daughter" class="score-box">
+          <h4>👧 Daughter</h4>
+          <div class="big-num" id="final-score-daughter">0</div>
+          <p>Total Score</p>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-top:20px;">
+        <button class="btn-next" onclick="replaySameMode()">🔄 Play Again (Chơi lại)</button>
+        <button class="btn-ghost" style="padding:14px 28px; font-size:1.1rem;" onclick="goHome()">🏠 Main Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 5: SCOREBOARD HISTORY -->
+  <section id="screen-scoreboard" class="screen">
+    <div class="summary-card" style="max-width: 850px;">
+      <h2 style="font-size: 2rem; margin-bottom: 8px;">📊 CLASSROOM SCOREBOARD</h2>
+      <p style="color: var(--text-muted);">Match history saved on this device (Lịch sử thi đấu)</p>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date / Time</th>
+              <th>Mode</th>
+              <th>👩 Mum</th>
+              <th>👧 Daughter</th>
+              <th>Winner</th>
+            </tr>
+          </thead>
+          <tbody id="scoreboard-body"></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px; display:flex; justify-content:center; gap:14px;">
+        <button class="btn-next" onclick="goHome()">🏠 Back to Menu</button>
+        <button class="btn-ghost" onclick="clearHistory()">🗑️ Clear History</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ==========================================================================
+   1. QUESTION BANK (108+ CURATED BRITISH ENGLISH RP QUESTIONS)
+   - Round 1: All 44 IPA phonemes (12 monophthongs, 8 diphthongs, 24 consonants)
+     Uses real anchor words so TTS pronounces actual speech sounds, never symbol names.
+   - Round 2: Minimal pairs & communicative words (4 options, UK IPA)
+   - Round 3: Sound blending (Ordered IPA phonemes -> full word + emoji illustration)
+   - Round 4: Read it aloud (Word + UK IPA + Teacher evaluation)
+   ========================================================================== */
+
+const QUESTION_BANK = {
+  // --- ROUND 1: ALL 44 IPA SOUNDS (44 ITEMS) ---
+  round1: [
+    // 12 Monophthongs
+    { ipa: "/iː/", hintWord: "sheep", displayHint: "sh[ee]p", options: ["/iː/", "/ɪ/", "/e/", "/ɜː/"], diff: "easy" },
+    { ipa: "/ɪ/", hintWord: "ship", displayHint: "sh[i]p", options: ["/ɪ/", "/iː/", "/e/", "/æ/"], diff: "easy" },
+    { ipa: "/ʊ/", hintWord: "book", displayHint: "b[oo]k", options: ["/ʊ/", "/uː/", "/ɒ/", "/ʌ/"], diff: "easy" },
+    { ipa: "/uː/", hintWord: "food", displayHint: "f[oo]d", options: ["/uː/", "/ʊ/", "/ɔː/", "/əʊ/"], diff: "easy" },
+    { ipa: "/e/", hintWord: "bed", displayHint: "b[e]d", options: ["/e/", "/æ/", "/ɪ/", "/ɜː/"], diff: "easy" },
+    { ipa: "/ə/", hintWord: "teacher", displayHint: "teach[er]", options: ["/ə/", "/ɜː/", "/ʌ/", "/ɑː/"], diff: "medium" },
+    { ipa: "/ɜː/", hintWord: "bird", displayHint: "b[ir]d", options: ["/ɜː/", "/ə/", "/ɔː/", "/ɑː/"], diff: "medium" },
+    { ipa: "/ɔː/", hintWord: "door", displayHint: "d[oor]", options: ["/ɔː/", "/ɒ/", "/uː/", "/ɑː/"], diff: "medium" },
+    { ipa: "/æ/", hintWord: "cat", displayHint: "c[a]t", options: ["/æ/", "/e/", "/ʌ/", "/ɑː/"], diff: "easy" },
+    { ipa: "/ʌ/", hintWord: "cup", displayHint: "c[u]p", options: ["/ʌ/", "/æ/", "/ɒ/", "/ə/"], diff: "medium" },
+    { ipa: "/ɑː/", hintWord: "car", displayHint: "c[ar]", options: ["/ɑː/", "/ʌ/", "/æ/", "/ɔː/"], diff: "easy" },
+    { ipa: "/ɒ/", hintWord: "hot", displayHint: "h[o]t", options: ["/ɒ/", "/ɔː/", "/ʌ/", "/əʊ/"], diff: "medium" },
+
+    // 8 Diphthongs
+    { ipa: "/ɪə/", hintWord: "ear", displayHint: "[ear]", options: ["/ɪə/", "/eə/", "/ʊə/", "/iː/"], diff: "medium" },
+    { ipa: "/eɪ/", hintWord: "rain", displayHint: "r[ai]n", options: ["/eɪ/", "/aɪ/", "/ɔɪ/", "/e/"], diff: "easy" },
+    { ipa: "/ʊə/", hintWord: "tour", displayHint: "t[our]", options: ["/ʊə/", "/ɪə/", "/eə/", "/ɔː/"], diff: "hard" },
+    { ipa: "/ɔɪ/", hintWord: "boy", displayHint: "b[oy]", options: ["/ɔɪ/", "/aɪ/", "/eɪ/", "/əʊ/"], diff: "easy" },
+    { ipa: "/əʊ/", hintWord: "home", displayHint: "h[o]me", options: ["/əʊ/", "/aʊ/", "/ɔː/", "/uː/"], diff: "medium" },
+    { ipa: "/eə/", hintWord: "hair", displayHint: "h[air]", options: ["/eə/", "/ɪə/", "/ʊə/", "/ɜː/"], diff: "medium" },
+    { ipa: "/aɪ/", hintWord: "time", displayHint: "t[i]me", options: ["/aɪ/", "/eɪ/", "/ɔɪ/", "/ɑː/"], diff: "easy" },
+    { ipa: "/aʊ/", hintWord: "house", displayHint: "h[ou]se", options: ["/aʊ/", "/əʊ/", "/ɔː/", "/ʌ/"], diff: "easy" },
+
+    // 24 Consonants
+    { ipa: "/p/", hintWord: "pen", displayHint: "[p]en", options: ["/p/", "/b/", "/f/", "/t/"], diff: "easy" },
+    { ipa: "/b/", hintWord: "bag", displayHint: "[b]ag", options: ["/b/", "/p/", "/v/", "/d/"], diff: "easy" },
+    { ipa: "/t/", hintWord: "tea", displayHint: "[t]ea", options: ["/t/", "/d/", "/θ/", "/k/"], diff: "easy" },
+    { ipa: "/d/", hintWord: "dog", displayHint: "[d]og", options: ["/d/", "/t/", "/ð/", "/g/"], diff: "easy" },
+    { ipa: "/tʃ/", hintWord: "chair", displayHint: "[ch]air", options: ["/tʃ/", "/dʒ/", "/ʃ/", "/tr/"], diff: "medium" },
+    { ipa: "/dʒ/", hintWord: "job", displayHint: "[j]ob", options: ["/dʒ/", "/tʃ/", "/ʒ/", "/j/"], diff: "medium" },
+    { ipa: "/k/", hintWord: "key", displayHint: "[k]ey", options: ["/k/", "/g/", "/t/", "/s/"], diff: "easy" },
+    { ipa: "/g/", hintWord: "go", displayHint: "[g]o", options: ["/g/", "/k/", "/d/", "/dʒ/"], diff: "easy" },
+    { ipa: "/f/", hintWord: "fish", displayHint: "[f]ish", options: ["/f/", "/v/", "/θ/", "/p/"], diff: "easy" },
+    { ipa: "/v/", hintWord: "van", displayHint: "[v]an", options: ["/v/", "/f/", "/w/", "/b/"], diff: "easy" },
+    { ipa: "/θ/", hintWord: "think", displayHint: "[th]ink", options: ["/θ/", "/ð/", "/s/", "/f/"], diff: "hard" },
+    { ipa: "/ð/", hintWord: "mother", displayHint: "mo[th]er", options: ["/ð/", "/θ/", "/z/", "/d/"], diff: "hard" },
+    { ipa: "/s/", hintWord: "sun", displayHint: "[s]un", options: ["/s/", "/z/", "/ʃ/", "/θ/"], diff: "easy" },
+    { ipa: "/z/", hintWord: "zoo", displayHint: "[z]oo", options: ["/z/", "/s/", "/ʒ/", "/ð/"], diff: "easy" },
+    { ipa: "/ʃ/", hintWord: "shoe", displayHint: "[sh]oe", options: ["/ʃ/", "/ʒ/", "/s/", "/tʃ/"], diff: "medium" },
+    { ipa: "/ʒ/", hintWord: "television", displayHint: "televi[s]ion", options: ["/ʒ/", "/ʃ/", "/dʒ/", "/z/"], diff: "hard" },
+    { ipa: "/m/", hintWord: "mum", displayHint: "[m]um", options: ["/m/", "/n/", "/ŋ/", "/b/"], diff: "easy" },
+    { ipa: "/n/", hintWord: "nice", displayHint: "[n]ice", options: ["/n/", "/m/", "/ŋ/", "/l/"], diff: "easy" },
+    { ipa: "/ŋ/", hintWord: "sing", displayHint: "si[ng]", options: ["/ŋ/", "/n/", "/g/", "/k/"], diff: "hard" },
+    { ipa: "/h/", hintWord: "hat", displayHint: "[h]at", options: ["/h/", "/f/", "/w/", "/r/"], diff: "easy" },
+    { ipa: "/l/", hintWord: "love", displayHint: "[l]ove", options: ["/l/", "/r/", "/n/", "/w/"], diff: "easy" },
+    { ipa: "/r/", hintWord: "red", displayHint: "[r]ed", options: ["/r/", "/l/", "/w/", "/j/"], diff: "easy" },
+    { ipa: "/w/", hintWord: "water", displayHint: "[w]ater", options: ["/w/", "/v/", "/r/", "/uː/"], diff: "medium" },
+    { ipa: "/j/", hintWord: "yes", displayHint: "[y]es", options: ["/j/", "/dʒ/", "/iː/", "/w/"], diff: "hard" }
+  ],
+
+  // --- ROUND 2: LISTEN & CHOOSE (24 MINIMAL PAIRS & EVERYDAY WORDS) ---
+  round2: [
+    { word: "ship", ipa: "/ʃɪp/", options: ["ship", "sheep", "shop", "chip"], diff: "easy", emoji: "🚢" },
+    { word: "sheep", ipa: "/ʃiːp/", options: ["sheep", "ship", "cheap", "sheet"], diff: "easy", emoji: "🐑" },
+    { word: "bed", ipa: "/bed/", options: ["bed", "bad", "bird", "bud"], diff: "easy", emoji: "🛏️" },
+    { word: "bad", ipa: "/bæd/", options: ["bad", "bed", "bat", "bag"], diff: "easy", emoji: "👎" },
+    { word: "full", ipa: "/fʊl/", options: ["full", "fool", "fall", "feel"], diff: "medium", emoji: "🥛" },
+    { word: "fool", ipa: "/fuːl/", options: ["fool", "full", "pool", "tool"], diff: "medium", emoji: "🤡" },
+    { word: "pen", ipa: "/pen/", options: ["pen", "pan", "pin", "pain"], diff: "easy", emoji: "🖊️" },
+    { word: "pan", ipa: "/pæn/", options: ["pan", "pen", "fan", "man"], diff: "easy", emoji: "🍳" },
+    { word: "hat", ipa: "/hæt/", options: ["hat", "heart", "hot", "hurt"], diff: "easy", emoji: "🎩" },
+    { word: "heart", ipa: "/hɑːt/", options: ["heart", "hat", "hot", "hard"], diff: "medium", emoji: "❤️" },
+    { word: "walk", ipa: "/wɔːk/", options: ["walk", "work", "woke", "week"], diff: "hard", emoji: "🚶" },
+    { word: "work", ipa: "/wɜːk/", options: ["work", "walk", "word", "world"], diff: "hard", emoji: "💼" },
+    { word: "three", ipa: "/θriː/", options: ["three", "tree", "free", "tea"], diff: "hard", emoji: "3️⃣" },
+    { word: "tree", ipa: "/triː/", options: ["tree", "three", "try", "train"], diff: "medium", emoji: "🌳" },
+    { word: "rice", ipa: "/raɪs/", options: ["rice", "lice", "rise", "race"], diff: "medium", emoji: "🍚" },
+    { word: "light", ipa: "/laɪt/", options: ["light", "right", "night", "late"], diff: "medium", emoji: "💡" },
+    { word: "cat", ipa: "/kæt/", options: ["cat", "cut", "cart", "coat"], diff: "easy", emoji: "🐱" },
+    { word: "cut", ipa: "/kʌt/", options: ["cut", "cat", "cot", "cute"], diff: "medium", emoji: "✂️" },
+    { word: "sit", ipa: "/sɪt/", options: ["sit", "seat", "set", "city"], diff: "easy", emoji: "🪑" },
+    { word: "seat", ipa: "/siːt/", options: ["seat", "sit", "sweet", "sheet"], diff: "easy", emoji: "💺" },
+    { word: "boat", ipa: "/bəʊt/", options: ["boat", "bought", "boot", "both"], diff: "hard", emoji: "⛵" },
+    { word: "bought", ipa: "/bɔːt/", options: ["bought", "boat", "board", "born"], diff: "hard", emoji: "🛍️" },
+    { word: "think", ipa: "/θɪŋk/", options: ["think", "sink", "thing", "thank"], diff: "hard", emoji: "🤔" },
+    { word: "wash", ipa: "/wɒʃ/", options: ["wash", "watch", "wish", "water"], diff: "medium", emoji: "🧼" }
+  ],
+
+  // --- ROUND 3: SOUND BLENDING (20 ITEMS) ---
+  round3: [
+    { word: "cat", ipa: "/kæt/", phonemes: ["/k/", "/æ/", "/t/"], emoji: "🐱", diff: "easy" },
+    { word: "dog", ipa: "/dɒg/", phonemes: ["/d/", "/ɒ/", "/g/"], emoji: "🐶", diff: "easy" },
+    { word: "sun", ipa: "/sʌn/", phonemes: ["/s/", "/ʌ/", "/n/"], emoji: "☀️", diff: "easy" },
+    { word: "book", ipa: "/bʊk/", phonemes: ["/b/", "/ʊ/", "/k/"], emoji: "📖", diff: "easy" },
+    { word: "fish", ipa: "/fɪʃ/", phonemes: ["/f/", "/ɪ/", "/ʃ/"], emoji: "🐟", diff: "easy" },
+    { word: "moon", ipa: "/muːn/", phonemes: ["/m/", "/uː/", "/n/"], emoji: "🌙", diff: "easy" },
+    { word: "bird", ipa: "/bɜːd/", phonemes: ["/b/", "/ɜː/", "/d/"], emoji: "🐦", diff: "medium" },
+    { word: "rain", ipa: "/reɪn/", phonemes: ["/r/", "/eɪ/", "/n/"], emoji: "🌧️", diff: "medium" },
+    { word: "house", ipa: "/haʊs/", phonemes: ["/h/", "/aʊ/", "/s/"], emoji: "🏠", diff: "medium" },
+    { word: "phone", ipa: "/fəʊn/", phonemes: ["/f/", "/əʊ/", "/n/"], emoji: "📱", diff: "medium" },
+    { word: "star", ipa: "/stɑː/", phonemes: ["/s/", "/t/", "/ɑː/"], emoji: "⭐", diff: "medium" },
+    { word: "milk", ipa: "/mɪlk/", phonemes: ["/m/", "/ɪ/", "/l/", "/k/"], emoji: "🥛", diff: "medium" },
+    { word: "green", ipa: "/griːn/", phonemes: ["/g/", "/r/", "/iː/", "/n/"], emoji: "🍏", diff: "medium" },
+    { word: "train", ipa: "/treɪn/", phonemes: ["/t/", "/r/", "/eɪ/", "/n/"], emoji: "🚆", diff: "medium" },
+    { word: "clock", ipa: "/klɒk/", phonemes: ["/k/", "/l/", "/ɒ/", "/k/"], emoji: "⏰", diff: "medium" },
+    { word: "smile", ipa: "/smaɪl/", phonemes: ["/s/", "/m/", "/aɪ/", "/l/"], emoji: "😊", diff: "hard" },
+    { word: "bread", ipa: "/bred/", phonemes: ["/b/", "/r/", "/e/", "/d/"], emoji: "🍞", diff: "hard" },
+    { word: "chair", ipa: "/tʃeə/", phonemes: ["/tʃ/", "/eə/"], emoji: "🪑", diff: "hard" },
+    { word: "mouth", ipa: "/maʊθ/", phonemes: ["/m/", "/aʊ/", "/θ/"], emoji: "👄", diff: "hard" },
+    { word: "school", ipa: "/skuːl/", phonemes: ["/s/", "/k/", "/uː/", "/l/"], emoji: "🏫", diff: "hard" }
+  ],
+
+  // --- ROUND 4: READ IT ALOUD (20 ITEMS) ---
+  round4: [
+    { word: "family", ipa: "/ˈfæməli/", tip: "Stress on the first syllable: FAm-i-ly", emoji: "👨‍👩‍👧", diff: "easy" },
+    { word: "mother", ipa: "/ˈmʌðə/", tip: "Use voiced /ð/ in the middle and schwa /ə/ at the end", emoji: "👩", diff: "easy" },
+    { word: "daughter", ipa: "/ˈdɔːtə/", tip: "Long /ɔː/ sound, silent 'gh'", emoji: "👧", diff: "medium" },
+    { word: "breakfast", ipa: "/ˈbrekfəst/", tip: "Short /e/ sound (not /iː/)", emoji: "🥐", diff: "medium" },
+    { word: "water", ipa: "/ˈwɔːtə/", tip: "British RP uses long /ɔː/ and silent final 'r'", emoji: "💧", diff: "easy" },
+    { word: "coffee", ipa: "/ˈkɒfi/", tip: "Short British /ɒ/ sound in the first syllable", emoji: "☕", diff: "easy" },
+    { word: "weather", ipa: "/ˈweðə/", tip: "Voiced /ð/ in the middle", emoji: "⛅", diff: "medium" },
+    { word: "birthday", ipa: "/ˈbɜːθdeɪ/", tip: "Long /ɜː/ followed by voiceless /θ/", emoji: "🎂", diff: "hard" },
+    { word: "together", ipa: "/təˈgeðə/", tip: "Stress on the second syllable: to-GE-ther", emoji: "🤝", diff: "medium" },
+    { word: "chocolate", ipa: "/ˈtʃɒklət/", tip: "Only 2 syllables in British English: CHOC-late", emoji: "🍫", diff: "hard" },
+    { word: "vegetable", ipa: "/ˈvedʒtəbəl/", tip: "3 syllables: VEG-ta-ble", emoji: "🥦", diff: "hard" },
+    { word: "beautiful", ipa: "/ˈbjuːtɪfəl/", tip: "Clear /bj/ at the beginning", emoji: "🌸", diff: "medium" },
+    { word: "weekend", ipa: "/ˌwiːkˈend/", tip: "Long /iː/ in 'week'", emoji: "🏖️", diff: "easy" },
+    { word: "teacher", ipa: "/ˈtiːtʃə/", tip: "Long /iː/ and /tʃ/ sound", emoji: "👩‍🏫", diff: "easy" },
+    { word: "morning", ipa: "/ˈmɔːnɪŋ/", tip: "End with nasal /ŋ/, no hard /g/ sound", emoji: "🌅", diff: "medium" },
+    { word: "holiday", ipa: "/ˈhɒlədeɪ/", tip: "Short /ɒ/ in the first syllable", emoji: "✈️", diff: "easy" },
+    { word: "question", ipa: "/ˈkwestʃən/", tip: "Contains /tʃ/ sound in the second syllable", emoji: "❓", diff: "hard" },
+    { word: "favourite", ipa: "/ˈfeɪvərɪt/", tip: "Diphthong /eɪ/ at the start", emoji: "🌟", diff: "medium" },
+    { word: "comfortable", ipa: "/ˈkʌmftəbəl/", tip: "3 syllables: COMF-ta-ble", emoji: "🛋️", diff: "hard" },
+    { word: "thank you", ipa: "/ˈθæŋk juː/", tip: "Start with tongue between teeth for /θ/", emoji: "🙏", diff: "medium" }
+  ]
+};
+
+// Total questions check: 44 + 24 + 20 + 20 = 108 unique questions!
+
+/* ==========================================================================
+   2. AUDIO & BRITISH ENGLISH SPEECH ENGINE (HONEST HARDWARE CHECK)
+   ========================================================================== */
+let ukVoice = null;
+let audioSupported = false;
+
+function initVoices() {
+  if (!('speechSynthesis' in window)) {
+    updateVoiceStatus(false, "Browser does not support Speech Audio. Teacher can model pronunciation.");
+    return;
+  }
+
+  const voices = window.speechSynthesis.getVoices();
+  if (voices.length === 0) return;
+
+  // Prioritize British English (en-GB) voices
+  ukVoice = voices.find(v => v.lang === 'en-GB' && v.name.includes('Google')) ||
+            voices.find(v => v.lang === 'en-GB' && (v.name.includes('Daniel') || v.name.includes('Kate') || v.name.includes('Serena'))) ||
+            voices.find(v => v.lang === 'en-GB' || v.lang === 'en_GB') ||
+            voices.find(v => v.lang.startsWith('en'));
+
+  if (ukVoice) {
+    audioSupported = true;
+    const isExactUK = ukVoice.lang.includes('GB');
+    updateVoiceStatus(
+      isExactUK,
+      isExactUK 
+        ? `Audio Ready: British English (${ukVoice.name})`
+        : `Audio Ready: English Fallback (${ukVoice.name}) – No native en-GB pack installed`
+    );
+  } else {
+    audioSupported = false;
+    updateVoiceStatus(false, "No English voice pack found on this device. Teacher models pronunciation.");
+  }
+}
+
+function updateVoiceStatus(isOptimal, text) {
+  const dot = document.getElementById('voice-dot');
+  const label = document.getElementById('voice-label');
+  dot.className = isOptimal ? 'dot' : 'dot warn';
+  label.textContent = text;
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = initVoices;
+  initVoices();
+}
+
+function speakWord(text, rate = 0.95) {
+  if (!audioSupported || !('speechSynthesis' in window)) {
+    alert("⚠️ Audio unavailable on this browser/device. Please have the teacher pronounce: " + text);
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  if (ukVoice) utter.voice = ukVoice;
+  utter.lang = 'en-GB';
+  utter.rate = rate;
+  utter.pitch = 1.02;
+  window.speechSynthesis.speak(utter);
+}
+
+// Gameshow Sound Effects (Web Audio API - zero external files needed)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSFX(type) {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const now = audioCtx.currentTime;
+
+  if (type === 'correct') {
+    // Cheerful ascending triad chime
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0.2, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.35);
+    });
+  } else if (type === 'encourage') {
+    // Gentle soft marimba tone (no harsh buzzer!)
+    [392.00, 349.23].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.14);
+      gain.gain.setValueAtTime(0.15, now + i * 0.14);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.14 + 0.3);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + i * 0.14);
+      osc.stop(now + i * 0.14 + 0.3);
+    });
+  } else if (type === 'pop') {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, now);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+}
+
+/* ==========================================================================
+   3. GAME STATE & TURN MANAGEMENT
+   ========================================================================== */
+let state = {
+  mode: 'full', // 'full', 'quick', 'blending', 'listening'
+  scores: { mum: 0, daughter: 0 },
+  currentPlayer: 'mum', // 'mum' or 'daughter'
+  roundsQueue: [],
+  currentRoundIndex: 0,
+  currentQuestionIndex: 0,
+  answeredCurrent: false,
+  selectedPhonemes: [],
+  shuffledPool: []
+};
+
+const ENCOURAGEMENTS_CORRECT = [
+  "Brilliant pronunciation! 🌟",
+  "Spot on! You nailed that British sound! 🎯",
+  "Superstar performance! 👏",
+  "Crystal clear! Keep that momentum going! 🔥",
+  "Awesome job! That sounded just like a native speaker! 🏆"
+];
+
+const ENCOURAGEMENTS_TRY = [
+  "Good effort! Listen closely to the difference and keep going! 💪",
+  "Almost there! Pronunciation takes practice — you've got this! 🌱",
+  "Nice try! Let's listen again so both players can master this sound! 🎧",
+  "Don't worry at all! Every tricky sound makes your ears sharper! ✨"
+];
+
+function shuffle(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateHeaderUI() {
+  document.getElementById('score-mum').textContent = state.scores.mum;
+  document.getElementById('score-daughter').textContent = state.scores.daughter;
+
+  const badgeMum = document.getElementById('badge-mum');
+  const badgeDaughter = document.getElementById('badge-daughter');
+  const turnMum = document.getElementById('turn-mum');
+  const turnDaughter = document.getElementById('turn-daughter');
+  const banner = document.getElementById('turn-banner');
+
+  if (state.currentPlayer === 'mum') {
+    badgeMum.classList.add('active');
+    badgeDaughter.classList.remove('active');
+    turnMum.style.visibility = 'visible';
+    turnDaughter.style.visibility = 'hidden';
+    if (banner) {
+      banner.className = 'turn-banner mum';
+      banner.innerHTML = '🎯 TURN: 👩 MUM (Lượt của Mẹ)';
+    }
+  } else {
+    badgeDaughter.classList.add('active');
+    badgeMum.classList.remove('active');
+    turnDaughter.style.visibility = 'visible';
+    turnMum.style.visibility = 'hidden';
+    if (banner) {
+      banner.className = 'turn-banner daughter';
+      banner.innerHTML = '🎯 TURN: 👧 DAUGHTER (Lượt của Con gái)';
+    }
+  }
+}
+
+function togglePlayerManually() {
+  state.currentPlayer = state.currentPlayer === 'mum' ? 'daughter' : 'mum';
+  updateHeaderUI();
+}
+
+function goHome() {
+  window.speechSynthesis.cancel();
+  showScreen('screen-home');
+}
+
+/* ==========================================================================
+   4. MODE INITIALIZATION (5-10 MIN CLASSROOM PACING)
+   ========================================================================== */
+function startMode(mode) {
+  state.mode = mode;
+  state.scores = { mum: 0, daughter: 0 };
+  state.currentPlayer = 'mum';
+  state.currentRoundIndex = 0;
+  state.currentQuestionIndex = 0;
+
+  if (mode === 'full') {
+    // 4 questions per round = 16 questions total (8 turns each, ~6-8 mins)
+    state.roundsQueue = [
+      { roundNum: 1, title: "ROUND 1 – GUESS THE SOUND", type: 1, questions: shuffle(QUESTION_BANK.round1).slice(0, 4) },
+      { roundNum: 2, title: "ROUND 2 – LISTEN AND CHOOSE", type: 2, questions: shuffle(QUESTION_BANK.round2).slice(0, 4) },
+      { roundNum: 3, title: "ROUND 3 – SOUND BLENDING", type: 3, questions: shuffle(QUESTION_BANK.round3).slice(0, 4) },
+      { roundNum: 4, title: "ROUND 4 – READ IT ALOUD", type: 4, questions: shuffle(QUESTION_BANK.round4).slice(0, 4) }
+    ];
+  } else if (mode === 'quick') {
+    // 2 questions from each round = 8 questions (~3-4 mins)
+    state.roundsQueue = [
+      { roundNum: 1, title: "QUICK PRACTICE – ROUND 1 (IPA)", type: 1, questions: shuffle(QUESTION_BANK.round1).slice(0, 2) },
+      { roundNum: 2, title: "QUICK PRACTICE – ROUND 2 (LISTEN)", type: 2, questions: shuffle(QUESTION_BANK.round2).slice(0, 2) },
+      { roundNum: 3, title: "QUICK PRACTICE – ROUND 3 (BLEND)", type: 3, questions: shuffle(QUESTION_BANK.round3).slice(0, 2) },
+      { roundNum: 4, title: "QUICK PRACTICE – ROUND 4 (READ)", type: 4, questions: shuffle(QUESTION_BANK.round4).slice(0, 2) }
+    ];
+  } else if (mode === 'blending') {
+    state.roundsQueue = [
+      { roundNum: 3, title: "SOUND BLENDING CHALLENGE", type: 3, questions: shuffle(QUESTION_BANK.round3).slice(0, 8) }
+    ];
+  } else if (mode === 'listening') {
+    state.roundsQueue = [
+      { roundNum: 2, title: "LISTENING CHALLENGE (MINIMAL PAIRS)", type: 2, questions: shuffle(QUESTION_BANK.round2).slice(0, 8) }
+    ];
+  }
+
+  updateHeaderUI();
+  showScreen('screen-game');
+  renderQuestion();
+}
+
+function replaySameMode() {
+  startMode(state.mode);
+}
+
+/* ==========================================================================
+   5. RENDERING QUESTIONS BY ROUND TYPE
+   ========================================================================== */
+function getCurrentRound() {
+  return state.roundsQueue[state.currentRoundIndex];
+}
+
+function getCurrentQuestion() {
+  const r = getCurrentRound();
+  return r.questions[state.currentQuestionIndex];
+}
+
+function renderQuestion() {
+  state.answeredCurrent = false;
+  const round = getCurrentRound();
+  const q = getCurrentQuestion();
+
+  document.getElementById('round-title').textContent = round.title;
+  document.getElementById('question-progress').textContent = 
+    `Question ${state.currentQuestionIndex + 1} / ${round.questions.length}`;
+
+  // Difficulty & Points badge
+  const diffBadge = document.getElementById('diff-badge');
+  const pts = q.diff === 'hard' ? 20 : 10;
+  diffBadge.className = `difficulty-badge diff-${q.diff}`;
+  diffBadge.textContent = `${q.diff.toUpperCase()} (+${pts} pts)`;
+
+  // Reset feedback
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  document.getElementById('feedback-visual').textContent = '';
+
+  const visualArea = document.getElementById('q-visual-area');
+  const interArea = document.getElementById('interactive-area');
+  const audioArea = document.getElementById('audio-controls-area');
+  visualArea.innerHTML = '';
+  interArea.innerHTML = '';
+  audioArea.style.display = 'flex';
+
+  updateHeaderUI();
+
+  // --- ROUND 1: GUESS THE SOUND ---
+  if (round.type === 1) {
+    document.getElementById('q-instruction').innerHTML = 
+      `Listen to the sample word and choose the IPA symbol for the highlighted sound:<br><small>(Nghe từ mẫu và chọn ký hiệu IPA tương ứng với âm được đánh dấu)</small>`;
+    
+    visualArea.innerHTML = `<div class="ipa-display" style="color:#38bdf8;">${q.displayHint}</div>`;
+    
+    const shuffledOpts = shuffle(q.options);
+    const grid = document.createElement('div');
+    grid.className = 'options-grid';
+
+    shuffledOpts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => handleChoiceAnswer(opt, q.ipa, btn, grid);
+      grid.appendChild(btn);
+    });
+    interArea.appendChild(grid);
+
+    setTimeout(() => playCurrentAudio(0.95), 350);
+  }
+
+  // --- ROUND 2: LISTEN AND CHOOSE ---
+  else if (round.type === 2) {
+    document.getElementById('q-instruction').innerHTML = 
+      `Look at the IPA transcription, listen carefully, and choose the matching word:<br><small>(Nhìn phiên âm IPA, nghe phát âm và chọn từ đúng)</small>`;
+    
+    visualArea.innerHTML = `<div class="ipa-display">${q.ipa}</div>`;
+
+    const shuffledOpts = shuffle(q.options);
+    const grid = document.createElement('div');
+    grid.className = 'options-grid';
+
+    shuffledOpts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => handleChoiceAnswer(opt, q.word, btn, grid);
+      grid.appendChild(btn);
+    });
+    interArea.appendChild(grid);
+
+    setTimeout(() => playCurrentAudio(0.95), 350);
+  }
+
+  // --- ROUND 3: SOUND BLENDING ---
+  else if (round.type === 3) {
+    document.getElementById('q-instruction').innerHTML = 
+      `Tap the IPA sounds in the correct order to blend them into a word!<br><small>(Chạm vào các âm vị theo đúng thứ tự để ghép thành từ hoàn chỉnh)</small>`;
+    
+    // Hide audio before blending so players actually blend from IPA phonemes!
+    audioArea.style.display = 'none';
+
+    state.selectedPhonemes = [];
+    state.shuffledPool = shuffle(q.phonemes.map((p, idx) => ({ id: idx, symbol: p, used: false })));
+
+    visualArea.innerHTML = `
+      <div style="font-size:0.95rem; color:#94a3b8;">Target length: <strong>${q.phonemes.length} sounds</strong></div>
+      <div id="blend-slots" class="blend-slots">
+        <span style="color:#64748b;">Tap sounds below to build word...</span>
+      </div>
+    `;
+
+    renderBlendingPool(interArea);
+  }
+
+  // --- ROUND 4: READ IT ALOUD ---
+  else if (round.type === 4) {
+    document.getElementById('q-instruction').innerHTML = 
+      `Read the word aloud clearly! The teacher will listen and score your pronunciation.<br><small>(Đọc to từ tiếng Anh dưới đây để giáo viên chấm điểm)</small>`;
+    
+    visualArea.innerHTML = `
+      <div style="font-size:3rem; margin-bottom:4px;">${q.emoji}</div>
+      <div class="word-display">${q.word}</div>
+      <div class="ipa-display">${q.ipa}</div>
+      <div style="color:#93c5fd; font-size:1rem; margin-bottom:10px;">💡 Tip: ${q.tip}</div>
+    `;
+
+    interArea.innerHTML = `
+      <div class="teacher-panel">
+        <p>👩‍🏫 Teacher Evaluation (Giáo viên đánh giá trực tiếp):</p>
+        <div class="teacher-btns">
+          <button class="btn-eval pass" onclick="handleTeacherEval(true)">✅ Great Pronunciation! (+${pts} pts)</button>
+          <button class="btn-eval retry" onclick="handleTeacherEval(false)">💛 Good Try / Needs Practice</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function playCurrentAudio(rate = 0.95) {
+  const round = getCurrentRound();
+  const q = getCurrentQuestion();
+  if (round.type === 1) {
+    speakWord(q.hintWord, rate);
+  } else {
+    speakWord(q.word, rate);
+  }
+}
+
+/* ==========================================================================
+   6. ANSWER HANDLERS (ROUNDS 1, 2, 3, 4)
+   ========================================================================== */
+function handleChoiceAnswer(selected, correct, btnElement, gridElement) {
+  if (state.answeredCurrent) return;
+  state.answeredCurrent = true;
+
+  const round = getCurrentRound();
+  const q = getCurrentQuestion();
+  const isCorrect = selected === correct;
+  const pts = q.diff === 'hard' ? 20 : 10;
+
+  // Highlight buttons
+  Array.from(gridElement.children).forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct) b.classList.add('correct');
+  });
+
+  if (isCorrect) {
+    btnElement.classList.add('correct');
+    awardPoints(pts);
+    const detail = round.type === 1
+      ? `Sound <strong>${q.ipa}</strong> as in <strong>"${q.hintWord}"</strong>`
+      : `Word: <strong>${q.word}</strong> &nbsp;|&nbsp; IPA: <strong>${q.ipa}</strong> ${q.emoji || ''}`;
+    showFeedback(true, detail, q.emoji || '');
+  } else {
+    btnElement.classList.add('wrong');
+    const detail = round.type === 1
+      ? `The correct IPA sound for <strong>"${q.hintWord}"</strong> is <strong>${q.ipa}</strong>.`
+      : `The correct word was <strong>${q.word}</strong> (${q.ipa}). Listen again below!`;
+    showFeedback(false, detail, q.emoji || '');
+  }
+}
+
+// Round 3 Blending UI
+function renderBlendingPool(container) {
+  container.innerHTML = '';
+  const poolDiv = document.createElement('div');
+  poolDiv.className = 'phoneme-pool';
+
+  state.shuffledPool.forEach(item => {
+    const tile = document.createElement('button');
+    tile.className = 'phoneme-tile';
+    tile.textContent = item.symbol;
+    tile.disabled = item.used || state.answeredCurrent;
+    tile.onclick = () => selectPhoneme(item.id, container);
+    poolDiv.appendChild(tile);
+  });
+
+  container.appendChild(poolDiv);
+
+  if (state.selectedPhonemes.length > 0 && !state.answeredCurrent) {
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'btn-ghost';
+    clearBtn.textContent = '⌫ Reset Sounds';
+    clearBtn.onclick = () => {
+      state.selectedPhonemes = [];
+      state.shuffledPool.forEach(i => i.used = false);
+      updateBlendSlots();
+      renderBlendingPool(container);
+    };
+    container.appendChild(clearBtn);
+  }
+}
+
+function selectPhoneme(id, container) {
+  if (state.answeredCurrent) return;
+  playSFX('pop');
+  const item = state.shuffledPool.find(i => i.id === id);
+  if (!item || item.used) return;
+
+  item.used = true;
+  state.selectedPhonemes.push(item.symbol);
+  updateBlendSlots();
+  renderBlendingPool(container);
+
+  const q = getCurrentQuestion();
+  if (state.selectedPhonemes.length === q.phonemes.length) {
+    checkBlendingResult();
+  }
+}
+
+function updateBlendSlots() {
+  const slotsDiv = document.getElementById('blend-slots');
+  if (state.selectedPhonemes.length === 0) {
+    slotsDiv.innerHTML = `<span style="color:#64748b;">Tap sounds below to build word...</span>`;
+    return;
+  }
+  slotsDiv.innerHTML = state.selectedPhonemes
+    .map(sym => `<span class="phoneme-tile in-slot" style="cursor:default;">${sym}</span>`)
+    .join('');
+}
+
+function checkBlendingResult() {
+  state.answeredCurrent = true;
+  const q = getCurrentQuestion();
+  const isCorrect = state.selectedPhonemes.join('') === q.phonemes.join('');
+  const pts = q.diff === 'hard' ? 20 : 10;
+
+  // Reveal audio button now that word is blended!
+  document.getElementById('audio-controls-area').style.display = 'flex';
+  setTimeout(() => speakWord(q.word, 0.9), 300);
+
+  if (isCorrect) {
+    awardPoints(pts);
+    showFeedback(
+      true,
+      `You blended ${q.phonemes.join(' + ')} into <strong>"${q.word}"</strong> (${q.ipa})!`,
+      q.emoji
+    );
+  } else {
+    showFeedback(
+      false,
+      `Correct order: <strong>${q.phonemes.join(' + ')}</strong> → <strong>"${q.word}"</strong> (${q.ipa}). Listen to how it blends!`,
+      q.emoji
+    );
+  }
+}
+
+// Round 4 Teacher Evaluation
+function handleTeacherEval(passed) {
+  if (state.answeredCurrent) return;
+  state.answeredCurrent = true;
+  const q = getCurrentQuestion();
+  const pts = q.diff === 'hard' ? 20 : 10;
+
+  if (passed) {
+    awardPoints(pts);
+    showFeedback(true, `Teacher confirmed clear pronunciation of <strong>"${q.word}"</strong> (${q.ipa})!`, q.emoji);
+  } else {
+    speakWord(q.word, 0.85);
+    showFeedback(false, `Listen to the British model for <strong>"${q.word}"</strong> (${q.ipa}) and repeat once together!`, q.emoji);
+  }
+}
+
+function awardPoints(pts) {
+  state.scores[state.currentPlayer] += pts;
+  updateHeaderUI();
+  launchConfetti();
+}
+
+function showFeedback(isSuccess, detailHTML, emoji) {
+  const fb = document.getElementById('feedback-box');
+  const title = document.getElementById('feedback-title');
+  const detail = document.getElementById('feedback-detail');
+  const visual = document.getElementById('feedback-visual');
+
+  if (isSuccess) {
+    playSFX('correct');
+    fb.className = 'feedback-box show success';
+    const msg = ENCOURAGEMENTS_CORRECT[Math.floor(Math.random() * ENCOURAGEMENTS_CORRECT.length)];
+    title.innerHTML = `✅ ${msg}`;
+    title.style.color = '#34d399';
+  } else {
+    playSFX('encourage');
+    fb.className = 'feedback-box show encourage';
+    const msg = ENCOURAGEMENTS_TRY[Math.floor(Math.random() * ENCOURAGEMENTS_TRY.length)];
+    title.innerHTML = `💛 ${msg}`;
+    title.style.color = '#fbbf24';
+  }
+
+  detail.innerHTML = detailHTML;
+  visual.textContent = emoji || '';
+}
+
+/* ==========================================================================
+   7. PROGRESSION, ROUND SUMMARY & WINNER PODIUM
+   ========================================================================== */
+function skipQuestion() {
+  nextQuestion();
+}
+
+function nextQuestion() {
+  window.speechSynthesis.cancel();
+  // Alternate player turn after every question
+  state.currentPlayer = state.currentPlayer === 'mum' ? 'daughter' : 'mum';
+  updateHeaderUI();
+
+  const round = getCurrentRound();
+  if (state.currentQuestionIndex + 1 < round.questions.length) {
+    state.currentQuestionIndex++;
+    renderQuestion();
+  } else {
+    // End of current round
+    if (state.currentRoundIndex + 1 < state.roundsQueue.length) {
+      showRoundIntermission();
+    } else {
+      finishGame();
+    }
+  }
+}
+
+function showRoundIntermission() {
+  const round = getCurrentRound();
+  document.getElementById('intermission-badge').textContent = `COMPLETED: ${round.title}`;
+
+  const m = state.scores.mum;
+  const d = state.scores.daughter;
+  document.getElementById('sum-score-mum').textContent = m;
+  document.getElementById('sum-score-daughter').textContent = d;
+
+  const boxM = document.getElementById('sum-box-mum');
+  const boxD = document.getElementById('sum-box-daughter');
+  boxM.classList.remove('leader');
+  boxD.classList.remove('leader');
+
+  if (m > d) {
+    document.getElementById('leader-headline').textContent = "👩 Mum is in the lead!";
+    boxM.classList.add('leader');
+  } else if (d > m) {
+    document.getElementById('leader-headline').textContent = "👧 Daughter is in the lead!";
+    boxD.classList.add('leader');
+  } else {
+    document.getElementById('leader-headline').textContent = "🤝 It's a Tie! Neck and neck!";
+    boxM.classList.add('leader');
+    boxD.classList.add('leader');
+  }
+
+  showScreen('screen-round-summary');
+}
+
+function continueNextRound() {
+  state.currentRoundIndex++;
+  state.currentQuestionIndex = 0;
+  showScreen('screen-game');
+  renderQuestion();
+}
+
+function finishGame() {
+  const m = state.scores.mum;
+  const d = state.scores.daughter;
+  document.getElementById('final-score-mum').textContent = m;
+  document.getElementById('final-score-daughter').textContent = d;
+
+  const boxM = document.getElementById('final-box-mum');
+  const boxD = document.getElementById('final-box-daughter');
+  boxM.classList.remove('leader');
+  boxD.classList.remove('leader');
+
+  let winnerLabel = "Tie Match";
+  if (m > d) {
+    winnerLabel = "👩 Mum";
+    document.getElementById('final-winner-title').textContent = "🏆 WINNER: 👩 MUM!";
+    boxM.classList.add('leader');
+  } else if (d > m) {
+    winnerLabel = "👧 Daughter";
+    document.getElementById('final-winner-title').textContent = "🏆 WINNER: 👧 DAUGHTER!";
+    boxD.classList.add('leader');
+  } else {
+    winnerLabel = "🤝 Co-Champions";
+    document.getElementById('final-winner-title').textContent = "🏆 IT'S A DRAW! CO-CHAMPIONS!";
+    boxM.classList.add('leader');
+    boxD.classList.add('leader');
+  }
+
+  saveMatchHistory(winnerLabel);
+  playSFX('correct');
+  launchConfetti();
+  showScreen('screen-final');
+}
+
+/* ==========================================================================
+   8. LOCAL STORAGE SCOREBOARD
+   ========================================================================== */
+function saveMatchHistory(winner) {
+  const history = JSON.parse(localStorage.getItem('epb_history') || '[]');
+  const modeNames = {
+    full: 'Full Battle (4 Rounds)',
+    quick: 'Quick Practice',
+    blending: 'Sound Blending',
+    listening: 'Listening Challenge'
+  };
+  history.unshift({
+    date: new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }),
+    mode: modeNames[state.mode] || state.mode,
+    mum: state.scores.mum,
+    daughter: state.scores.daughter,
+    winner
+  });
+  localStorage.setItem('epb_history', JSON.stringify(history.slice(0, 20)));
+}
+
+function showScoreboard() {
+  const history = JSON.parse(localStorage.getItem('epb_history') || '[]');
+  const tbody = document.getElementById('scoreboard-body');
+  if (history.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:24px;">No matches played yet. Start a battle to record scores!</td></tr>`;
+  } else {
+    tbody.innerHTML = history.map(row => `
+      <tr>
+        <td>${row.date}</td>
+        <td>${row.mode}</td>
+        <td style="font-weight:800; color:#f472b6;">${row.mum} pts</td>
+        <td style="font-weight:800; color:#22d3ee;">${row.daughter} pts</td>
+        <td style="font-weight:800; color:#fbbf24;">${row.winner}</td>
+      </tr>
+    `).join('');
+  }
+  showScreen('screen-scoreboard');
+}
+
+function clearHistory() {
+  if (confirm("Clear all saved match history?")) {
+    localStorage.removeItem('epb_history');
+    showScoreboard();
+  }
+}
+
+/* ==========================================================================
+   9. CONFETTI CELEBRATION ANIMATION
+   ========================================================================== */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#60a5fa'];
+  const pieces = Array.from({ length: 75 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    r: Math.random() * 6 + 4,
+    d: Math.random() * 4 + 2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    tilt: Math.random() * 10 - 5
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.beginPath();
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.r * 1.5, p.r);
+      p.y += p.d;
+      p.x += Math.sin(frame * 0.05) * 1.5;
+    });
+    frame++;
+    if (frame < 95) {
+      requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  draw();
+}
+</script>
+</body>
+</html>
